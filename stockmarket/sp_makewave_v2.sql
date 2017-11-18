@@ -19,8 +19,8 @@ BEGIN
                             DATE_ADD(
                                 TRADE_DATE,
                                 INTERVAL (FLOOR((RAND() * 7) + 9)) HOUR),
-                            INTERVAL (FLOOR(RAND() * 61)) MINUTE),
-                        INTERVAL (FLOOR(RAND() * 61)) SECOND),
+                            INTERVAL (FLOOR(RAND() * 60)) MINUTE),
+                        INTERVAL (FLOOR(RAND() * 60)) SECOND),
         TRADE_PRICE = (rand() * 10000) + 1,
         TRADE_SIZE  = floor(rand() * 1000) + 1;
 END //
