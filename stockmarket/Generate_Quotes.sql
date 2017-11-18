@@ -1,3 +1,4 @@
+DELIMITER //
 CREATE PROCEDURE `Generate_Quotes`(IN `loops` INT, IN `switch` INT, IN `amp` INT)
 BEGIN
     DECLARE this_instrument INT(11);
@@ -156,4 +157,5 @@ BEGIN
 
     CLOSE cur1;
 
-END
+END//
+DELIMITER ;
