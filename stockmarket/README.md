@@ -1,4 +1,17 @@
 ```
+MySQL [F17336Gteam8]> describe traders;
++---------------+--------------+------+-----+---------+----------------+
+| Field         | Type         | Null | Key | Default | Extra          |
++---------------+--------------+------+-----+---------+----------------+
+| trader_id     | int(11)      | NO   | PRI | NULL    | auto_increment |
+| name          | varchar(30)  | NO   |     | NULL    |                |
+| total_balance | double(18,4) | NO   |     | NULL    |                |
++---------------+--------------+------+-----+---------+----------------+
+```
+
+Traders to trade options can be found in above table;
+
+```
 MySQL [F17336Gteam8]> describe STOCK_TRADE;
 +----------------+---------------+------+-----+---------+-------+
 | Field          | Type          | Null | Key | Default | Extra |
