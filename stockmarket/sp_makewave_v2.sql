@@ -14,7 +14,13 @@ CREATE PROCEDURE makewave_v2()
 BEGIN
     UPDATE STOCK_TRADE SET
         TRADE_DATE  = DATE_ADD(TRADE_DATE, INTERVAL 1 DAY),
-        TRADE_TIME  = DATE_ADD(TRADE_DATE, INTERVAL (floor(rand() * 16) + 9) HOUR),
+        TRADE_TIME  = DATE_ADD(
+                        DATE_ADD(
+                            DATE_ADD(
+                                TRADE_DATE,
+                                INTERVAL (FLOOR((RAND() * 7) + 9)) HOUR),
+                            INTERVAL (FLOOR(RAND() * 61)) MINUTE),
+                        INTERVAL (FLOOR(RAND() * 61)) SECOND),
         TRADE_PRICE = (rand() * 1000) + 1,
         TRADE_SIZE  = floor(rand() * 1000) + 1;
 END //
