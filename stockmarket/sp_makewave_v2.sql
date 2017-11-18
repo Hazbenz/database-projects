@@ -1,5 +1,11 @@
 -- Call this first in any trigger or stored procedure
 
+-- Every time this is run:
+-- + TRADE_DATE updates to next day
+-- + TRADE_TIME updates to next day some time between 9am to 4pm
+-- + TRADE_PRICE updates to a random double from 1 to 1000
+-- + TRADE_SIZE updates to random integer from 1 to 1000
+
 DROP PROCEDURE IF EXISTS makewave_v2;
 
 DELIMITER //
@@ -7,13 +13,17 @@ DELIMITER //
 CREATE PROCEDURE makewave_v2()
 BEGIN
 
-    UPDATE STOCK_TRADE SET
-        TRADE_DATE  = DATE_ADD(TRADE_DATE, INTERVAL 1 DAY),
-        TRADE_TIME  = DATE_ADD(TRADE_DATE, INTERVAL (floor(rand() * 24) + 0) HOUR),
-        TRADE_PRICE = (rand() * 1000) + 1,
-        TRADE_SIZE  = floor(rand() * 1000) + 1;
-    -- TODO: update only if current time is > 9 and < 16
-    -- Lower priority TODO: ensure TRADE_DATE and TRADE_TIME are always > 9
-    -- and < 16
+    IF
+    (
+        NOW() > DATE_ADD(DATE(NOW()), interval 9 hour) AND
+        NOW() < DATE_ADD(DATE(NOW()), interval 16 hour)
+    )
+    THEN
+        UPDATE STOCK_TRADE SET
+            TRADE_DATE  = DATE_ADD(TRADE_DATE, INTERVAL 1 DAY),
+            TRADE_TIME  = DATE_ADD(TRADE_DATE, INTERVAL (floor(rand() * 16) + 9) HOUR),
+            TRADE_PRICE = (rand() * 1000) + 1,
+            TRADE_SIZE  = floor(rand() * 1000) + 1;
+    END IF;
 END //
 DELIMITER ;
