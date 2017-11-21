@@ -26,8 +26,6 @@ BEGIN
     FROM STOCK_TRADE
     ORDER BY RAND() LIMIT 1;
 
-    SELECT v_per_price;
-
     SET v_is_buyer = FLOOR(RAND() * 2);
 
     -- If trader is looking to buy options
@@ -51,8 +49,6 @@ BEGIN
         FROM traders
         ORDER BY RAND() LIMIT 1;
     END IF;
-
-    SELECT v_trade_size;
 
     -- Set premium price 5% of the total
     SET v_premium = (v_per_price * v_trade_size) * (0.05);
