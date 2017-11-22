@@ -8,15 +8,16 @@ BEGIN
     DECLARE v_trade_time DATETIME;
     DECLARE v_next_time DATETIME;
     DECLARE v_time_diff INT;
-    DECLARE v_trade_price DOUBLE(18, 4);
+    DECLARE v_trade_price DECIMAL(18, 4);
 
-    DECLARE v_distinct_instrument_id BOOLEAN; -- non zero will be true
+    DECLARE v_distinct_instrument_id BOOLEAN;
 
     SELECT count(distinct INSTRUMENT_ID)
     INTO v_distinct_instrument_id
     FROM STOCK_TRADE;
 
     IF v_distinct_instrument_id THEN
+
         SELECT INSTRUMENT_ID
         INTO v_instrument_id
         FROM stocks
@@ -34,13 +35,17 @@ BEGIN
         WHERE 
             INSTRUMENT_ID = v_instrument_id
         ORDER BY
-            RAND() LIMIT 1;
+            TRADE_TIME DESC
+        LIMIT 1;
 
         SET v_time_diff = TIMESTAMPDIFF(
                                 MINUTE,
                                 v_trade_time,
                                 DATE_ADD(DATE(v_trade_time), INTERVAL 16 HOUR)
                             );
+
+        -- SELECT v_time_diff;
+        -- SELECT v_time_diff > 30;
 
         IF v_time_diff > 30 THEN
             SET v_next_time = DATE_ADD(
@@ -49,10 +54,15 @@ BEGIN
                             );
         ELSE
             SET v_next_time = DATE_ADD(
-                                DATE_ADD(v_trade_time, INTERVAL 1 DAY),
+                                DATE_ADD(
+                                    DATE_ADD(DATE(v_trade_time), INTERVAL 1 DAY),
+                                    INTERVAL 9 HOUR
+                                ),
                                 INTERVAL (FLOOR(RAND() * 30) + 1) MINUTE
                             );
         END IF;
+
+        SELECT v_instrument_id, v_next_time;
 
         INSERT INTO STOCK_TRADE
         (
@@ -67,7 +77,7 @@ BEGIN
             v_instrument_id,
             DATE(v_next_time),
             v_next_time,
-            ((v_trade_price * (FLOOR((RAND() * 7)-3))/100) + v_trade_price),
+            ((v_trade_price * (((RAND() * 7)-3)/100)) + v_trade_price),
             FLOOR((RAND() * 1000) + 1)
         );
     ELSE
@@ -89,6 +99,6 @@ BEGIN
             stocks;
     END IF;
 
-
 END //
+
 DELIMITER ;
