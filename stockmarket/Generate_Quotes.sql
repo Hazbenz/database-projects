@@ -37,7 +37,7 @@ BEGIN
     SET loopcount=0;
 
     OPEN cur1;
-
+ 
       quote_loop: LOOP
 
         IF (db_done OR loopcount=maxloops)
