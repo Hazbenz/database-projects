@@ -17,14 +17,28 @@ BEGIN
 
     -- Strike price is to be set between -5 to 5 percent in change from
     -- current per stock price
-    SELECT
-    INSTRUMENT_ID, 
-    TRADE_DATE,
-    TRADE_PRICE/TRADE_SIZE,
-    ((TRADE_PRICE/TRADE_SIZE)*((SELECT FLOOR((RAND() * (11))-5))/100)) + (TRADE_PRICE/TRADE_SIZE)
-        INTO v_instrument_id, v_offer_expires, v_per_price, v_strike_price
+
+    SELECT INSTRUMENT_ID
+    INTO v_instrument_id
     FROM STOCK_TRADE
-    ORDER BY RAND() LIMIT 1;
+    ORDER BY RAND()
+    LIMIT 1;
+
+    SELECT
+        TRADE_DATE,
+        TRADE_PRICE,
+        (TRADE_PRICE*((FLOOR((RAND() * (11))-5))/100)) + TRADE_PRICE
+    INTO
+        v_offer_expires,
+        v_per_price,
+        v_strike_price
+    FROM
+        STOCK_TRADE
+    WHERE
+        INSTRUMENT_ID=v_instrument_id
+    ORDER BY
+        TRADE_TIME DESC
+    LIMIT 1;
 
     SET v_is_buyer = FLOOR(RAND() * 2);
 
@@ -53,11 +67,12 @@ BEGIN
     -- Set premium price 5% of the total
     SET v_premium = (v_per_price * v_trade_size) * (0.05);
 
+    SELECT v_instrument_id, v_is_buyer, v_trader_id, v_trade_size, v_premium, v_strike_price;
+
     INSERT INTO option_quotes
     (
         instrument_id,
         trader_id,
-        is_active,
         trader_type,
         option_type,
         trade_size,
@@ -70,15 +85,15 @@ BEGIN
     (
         v_instrument_id,
         v_trader_id,
-        true,
         v_is_buyer,
         FLOOR(RAND() * 2),
         v_trade_size,
         v_premium,
         v_strike_price,
-        DATE_ADD(v_offer_expires, INTERVAL 3 day),
-        DATE_ADD(v_offer_expires, INTERVAL 1 day)
+        DATE_ADD(DATE_ADD(v_offer_expires, INTERVAL 960 MINUTE), INTERVAL 3 day),
+        DATE_ADD(DATE_ADD(v_offer_expires, INTERVAL 960 MINUTE), INTERVAL 1 day)
     );
+
 END //
 
 DELIMITER ;
