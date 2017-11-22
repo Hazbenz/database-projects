@@ -9,29 +9,19 @@ BEGIN
     DECLARE v_next_time DATETIME;
     DECLARE v_time_diff INT;
     DECLARE v_trade_price DOUBLE(18, 4);
-    DECLARE v_trading_symbol varchar(15);
 
     SELECT INSTRUMENT_ID
     INTO v_instrument_id
-        FROM
-        (
-            SELECT DISTINCT INSTRUMENT_ID
-            FROM STOCK_TRADE
-        ) as pre
-    ORDER BY
-        RAND()
+    FROM stocks
+    ORDER BY RAND()
     LIMIT 1;
-
-    SELECT v_instrument_id;
 
     SELECT
         TRADE_TIME,
-        TRADE_PRICE,
-        TRADING_SYMBOL
+        TRADE_PRICE
     INTO
         v_trade_time,
-        v_trade_price,
-        v_trading_symbol
+        v_trade_price
     FROM
         STOCK_TRADE
     WHERE 
@@ -61,7 +51,6 @@ BEGIN
     (
         INSTRUMENT_ID,
         TRADE_DATE,
-        TRADING_SYMBOL,
         TRADE_TIME,
         TRADE_PRICE,
         TRADE_SIZE
@@ -70,7 +59,6 @@ BEGIN
     (
         v_instrument_id,
         DATE(v_next_time),
-        v_trading_symbol,
         v_next_time,
         ((v_trade_price * (FLOOR((RAND() * 7)-3))/100) + v_trade_price),
         FLOOR((RAND() * 1000) + 1)
