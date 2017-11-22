@@ -44,9 +44,6 @@ BEGIN
                                 DATE_ADD(DATE(v_trade_time), INTERVAL 16 HOUR)
                             );
 
-        -- SELECT v_time_diff;
-        -- SELECT v_time_diff > 30;
-
         IF v_time_diff > 30 THEN
             SET v_next_time = DATE_ADD(
                                 v_trade_time,
