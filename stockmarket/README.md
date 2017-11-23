@@ -89,8 +89,8 @@ MySQL [F17336Gteam8]> describe option_transactions;
 
 A stock trader will look at the `option_quotes` table for offers made and
 decide which(identified by `quote_id`) of the offer to transact on. The
-transaction will be made by calling sored proceduere `option_trade`**[to be
-implemented]** with input of a `option_quotes.quote_id`. The stored
+transaction will be made by calling sored proceduere `make_transaction`
+with input of a `option_quotes.quote_id`. The stored
 proceudure will add row to `option_transactions` table. Like `makewave_v2`
 trading should be limited to time between 9 to 16.
 
